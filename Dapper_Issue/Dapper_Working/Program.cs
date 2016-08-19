@@ -3,7 +3,7 @@ using Dapper.Contrib.Extensions;
 using System;
 using System.Data.SqlClient;
 
-namespace Dapper_Issue
+namespace Dapper_Working
 {
     class Program
     {
@@ -21,13 +21,13 @@ namespace Dapper_Issue
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Dapper.Contrib 1.50.0");
+            Console.WriteLine("Dapper.Contrib 1.43");
             using (var connection = new SqlConnection("Data Source=.;Initial Catalog=tempdb;Integrated Security=True"))
             {
                 Action<string> dropTable = name => connection.Execute($@"IF OBJECT_ID('{name}', 'U') IS NOT NULL DROP TABLE [{name}]; ");
                 dropTable("StuffTrigger");
                 connection.Execute(@"CREATE TABLE StuffTrigger (TheId int IDENTITY(1,1) not null, ASecondKey Int, Name nvarchar(100) not null, Created DateTime null);");
-                
+
                 try
                 {
                     connection.Execute("DROP TRIGGER [dbo].[trg_DIExample]");
@@ -84,7 +84,8 @@ namespace Dapper_Issue
 
                                        END");
 
-                for (int i = 1; i <= 5; i++)
+                //Only one iteration because strange behaviour on follow insert
+                for (int i = 1; i <= 1; i++)
                 {
                     var stuffTrigerEx = new StuffTrigger()
                     {
